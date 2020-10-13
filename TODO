@@ -1,0 +1,12 @@
+[ ] Asignar roles (Admin, User, Developer) 
+      Developer (Yo) Puedo crear admin y usuarios. lo especifico al crearlo (El rol de developer solo podra ser ingresado modificando la base de datos.)
+      Admin (Jefe) Solo puede crear usuarios que estaran relacionados con el. (Tendra un limite de 5 o 6).
+      User solo puede ser creado por admin, no de forma autonoma.
+
+      ****** Lo anterior es para el proyecto que quiere mi papa.
+
+[ ] Solo mostrar cierta informacion de los usuarios.
+
+[ ] El admin es quien hace post update y delete, en algunas ocaciones el get es solo del admin.
+
+[ ] El rol admin solo puede ser concedido por mi. User es default en la creacino y en el update.

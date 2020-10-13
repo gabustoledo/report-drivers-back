@@ -30,7 +30,7 @@ authCtrl.register = (req, res) => {
             password: encryptedPassword,
             salt: newSalt,
           }).then(() => {
-            res.send("Usuario creado con exito");
+            res.send({ message: "Usuario creado con exito" });
           });
         });
     });
@@ -52,7 +52,7 @@ authCtrl.login = (req, res) => {
           const token = signToken(user._id);
           return res.send({ token });
         }
-        return res.send("Usuario y/o contraseña incorrecta");
+        return res.send({ message: "Usuario y/o contraseña incorrecta" });
       });
     });
 };
