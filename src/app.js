@@ -2,6 +2,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 // Exportacion de Rutas
 const userRouter = require("./routes/users.routes");
@@ -10,12 +11,12 @@ const authRouter = require("./routes/auth.routes");
 
 const app = express();
 
-require('dotenv').config();
+require("dotenv").config();
 app.set("port", process.env.PORT || 3000);
 
 app.use(cors());
 app.use(morgan("dev"));
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Definicion de rutas de la api

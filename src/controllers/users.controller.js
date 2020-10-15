@@ -3,26 +3,32 @@ const User = require("../models/User");
 const usersCtrl = {};
 
 // Create and save user.
-usersCtrl.create = async (req, res) => {
-  // Validate request
-  if (!req.body) {
-    res.status(400).send({ message: "Content can not be empty!" });
-    return;
-  }
+// usersCtrl.create = async (req, res) => {
+//   // Validate request
+//   if (!req.body) {
+//     res.status(400).send({ message: "Content can not be empty!" });
+//     return;
+//   }
 
-  // Create user
-  const newUser = new User(req.body);
+//   // Create user
+//   const newUser = new User(req.body);
 
-  // Save user
-  const createdUser = await newUser.save();
+//   // Save user
+//   const createdUser = await newUser.save();
 
-  res.status(200).send(createdUser)
-};
+//   res.status(200).send(createdUser);
+// };
 
 // Get all users.
 usersCtrl.getUsers = async (req, res) => {
   const users = await User.find();
-  res.status(200).send(users);
+  const newUsers = users.map((user) => {
+    return {
+      _id: user._id,
+      name: user.name,
+    };
+  });
+  res.status(200).send(newUsers);
 };
 
 // Get one user by id.
@@ -33,7 +39,11 @@ usersCtrl.getUser = (req, res) => {
     .then((data) => {
       if (!data)
         res.status(404).send({ message: "Not found User with id " + id });
-      else res.status(200).send(data);
+      else
+        res.status(200).send({
+          _id: data._id,
+          name: data.name,
+        });
     })
     .catch((err) => {
       res.status(500).send({ message: "Error retrieving User with id=" + id });

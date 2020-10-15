@@ -7,10 +7,10 @@ const { isAuthenticated } = require("../middlewares/auth.middleware");
 router.post("/", isAuthenticated, productsCtrl.create);
 
 // Get all products
-router.get("/", productsCtrl.getProducts);
+router.get("/", isAuthenticated, productsCtrl.getProducts);
 
 // Get one product
-router.get("/:id", productsCtrl.getProduct);
+router.get("/:id", isAuthenticated, productsCtrl.getProduct);
 
 // Update product
 router.put("/:id", isAuthenticated, productsCtrl.updateProduct);

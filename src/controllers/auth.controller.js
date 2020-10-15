@@ -13,24 +13,27 @@ const signToken = (_id) => {
 
 // Funcion para registrar un usuario, generando una salt y una pass encriptada
 authCtrl.register = (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, password } = req.body;
   crypto.randomBytes(16, (err, salt) => {
     const newSalt = salt.toString("base64");
     crypto.pbkdf2(password, newSalt, 10000, 64, "sha1", (err, key) => {
       const encryptedPassword = key.toString("base64");
-      User.findOne({ email })
+      User.findOne({ name })
         .exec()
         .then((user) => {
           if (user) {
-            return res.send("Usuario ya existe");
+            return res.send({ message: "User already exists" });
           }
           User.create({
             name,
-            email,
             password: encryptedPassword,
             salt: newSalt,
+            role: req.user.role === "dev" ? "admin" : "user",
+            maxEmploy: req.user.role === "dev" ? "5" : "0",
+            boss: req.user._id,
+            active: true,
           }).then(() => {
-            res.send({ message: "Usuario creado con exito" });
+            res.send({ message: "User created successfully" });
           });
         });
     });
@@ -39,12 +42,12 @@ authCtrl.register = (req, res) => {
 
 // Funcion para comprobar los datos ingresados del usuario y generar un token en caso de estar registrado.
 authCtrl.login = (req, res) => {
-  const { email, password } = req.body;
-  User.findOne({ email })
+  const { name, password } = req.body;
+  User.findOne({ name })
     .exec()
     .then((user) => {
       if (!user) {
-        return res.send("Usuario y/o contraseña incorrecta");
+        return res.send({ message: "Incorrect username and/or password" });
       }
       crypto.pbkdf2(password, user.salt, 10000, 64, "sha1", (err, key) => {
         const encryptedPassword = key.toString("base64");
@@ -52,7 +55,7 @@ authCtrl.login = (req, res) => {
           const token = signToken(user._id);
           return res.send({ token });
         }
-        return res.send({ message: "Usuario y/o contraseña incorrecta" });
+        return res.send({ message: "Incorrect username and/or password" });
       });
     });
 };
