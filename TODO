@@ -9,17 +9,15 @@
 
 [X] Solo mostrar cierta informacion de los usuarios.
 
-[ ] El admin es quien hace post update y delete (active), en algunas ocaciones el get es solo del admin.
+[X] El admin es quien hace post update y delete (active), en algunas ocaciones el get es solo del admin.
 
-[/] El rol admin solo puede ser concedido por mi. User es default en la creacino y en el update.
+[X] El rol admin solo puede ser concedido por mi. User es default en la creacino y en el update.
 
-[ ] Controlador create de usuario, antes comprobar que no exista un usuario con el mismo name.
+[X] Controlador create de usuario, antes comprobar que no exista un usuario con el mismo name.
 
 [X] Agregar atributo de active para los usuarios.
 
 [X] en el register hay que agregar el tema de agregar el rol dependiendo de quien sea el que lo esta ingresando. y agregar los nuevos atributos  en la creacion del usuario.
-[ ] En el login entrgar diferentes tiempo del token para dijerentes roles de los usuarios
-[ ] En el usercontroller, para todo ya se sabra el usuairo que estara haciendo la peticion, por lo tanto solo se le entrgaran sus usuarios y solo se le dejara manipular suss usuarios
+[X] En el login entrgar diferentes tiempo del token para dijerentes roles de los usuarios
+[X] En el usercontroller, para todo ya se sabra el usuairo que estara haciendo la peticion, por lo tanto solo se le entrgaran sus usuarios y solo se le dejara manipular suss usuarios
 [X] Agregar en middlewares una funcion hasrole, que solo deje hacer ciertas cosas al usuario si tiene el rol entregado como parametro.
-
-ver en el video como es que relaciona con otra coleccion, ver como la pobla posteriormente y ver como es que valida el tema de los roles

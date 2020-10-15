@@ -6,7 +6,7 @@ const userSchema = new Schema(
     password: String,
     salt: String,
     role: String, // dev, admin, user
-    boss: { type: Schema.Types.ObjectId, ref: "User" }, // Para los empleados, tienen asignado un boss
+    employer: { type: Schema.Types.ObjectId, ref: "User" }, // Para los empleados, tienen asignado un boss
     active: Boolean,
   },
   {

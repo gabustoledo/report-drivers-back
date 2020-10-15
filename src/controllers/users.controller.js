@@ -21,7 +21,8 @@ const usersCtrl = {};
 
 // Get all users.
 usersCtrl.getUsers = async (req, res) => {
-  const users = await User.find();
+  const employer = req.user._id;
+  const users = await User.find({ employer });
   const newUsers = users.map((user) => {
     return {
       _id: user._id,
@@ -55,6 +56,12 @@ usersCtrl.updateUser = (req, res) => {
   if (!req.body) {
     return res.status(400).send({
       message: "Data to update can not be empty!",
+    });
+  }
+
+  if (req.body.role) {
+    return res.status(400).send({
+      message: "It is not possible to change the role",
     });
   }
 

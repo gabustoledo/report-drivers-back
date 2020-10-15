@@ -7,4 +7,6 @@ router.post("/login", authCtrl.login);
 
 router.post("/register", isAuthenticated, isAdmin, authCtrl.register);
 
+router.get("/me", isAuthenticated, authCtrl.me);
+
 module.exports = router;

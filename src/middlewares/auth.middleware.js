@@ -25,7 +25,15 @@ const isAdmin = (req, res, next) => {
   return res.status(403).send({ message: "Invalid role" });
 };
 
+const isDev = (req, res, next) => {
+  if (req.user.role === "dev") {
+    return next();
+  }
+  return res.status(403).send({ message: "Invalid role" });
+};
+
 module.exports = {
   isAuthenticated,
   isAdmin,
+  isDev,
 };

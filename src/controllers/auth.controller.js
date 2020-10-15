@@ -30,7 +30,7 @@ authCtrl.register = (req, res) => {
             salt: newSalt,
             role: req.user.role === "dev" ? "admin" : "user",
             maxEmploy: req.user.role === "dev" ? "5" : "0",
-            boss: req.user._id,
+            employer: req.user._id,
             active: true,
           }).then(() => {
             res.send({ message: "User created successfully" });
@@ -49,6 +49,11 @@ authCtrl.login = (req, res) => {
       if (!user) {
         return res.send({ message: "Incorrect username and/or password" });
       }
+      if (!user.active) {
+        return res.send({
+          message: "User inactive, contact with your employer",
+        });
+      }
       crypto.pbkdf2(password, user.salt, 10000, 64, "sha1", (err, key) => {
         const encryptedPassword = key.toString("base64");
         if (user.password === encryptedPassword) {
@@ -58,6 +63,14 @@ authCtrl.login = (req, res) => {
         return res.send({ message: "Incorrect username and/or password" });
       });
     });
+};
+
+authCtrl.me = (req, res) => {
+  return res.send({
+    _id: req.user._id,
+    name: req.user.name,
+    role: req.user.role,
+  });
 };
 
 module.exports = authCtrl;
