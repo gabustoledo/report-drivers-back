@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const userRouter = require("./routes/users.routes");
 const productRouter = require("./routes/products.routes");
 const authRouter = require("./routes/auth.routes");
+const extraRouter = require("./routes/extra.routes");
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/extra", extraRouter);
 
 module.exports = app;

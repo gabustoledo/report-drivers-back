@@ -5,13 +5,13 @@ const userSchema = new Schema(
     name: { type: String, unique: true, required: true },
     password: String,
     salt: String,
-    role: String, // dev, admin, user
-    employer: { type: Schema.Types.ObjectId, ref: "User" }, // Para los empleados, tienen asignado un boss
+    role: String, // dev, admin, driver
+    //employer: { type: Schema.Types.ObjectId, ref: "User" }, // For drivers
     active: Boolean,
   },
   {
-    timestamps: false, // Para la fecha de creacion y modificacion
-    versionKey: false, // Para quitar eso de _v
+    timestamps: false,
+    versionKey: false,
   }
 );
 

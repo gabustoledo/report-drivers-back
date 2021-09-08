@@ -28,8 +28,7 @@ authCtrl.register = (req, res) => {
             name,
             password: encryptedPassword,
             salt: newSalt,
-            role: req.user.role === "dev" ? "admin" : "user",
-            maxEmploy: req.user.role === "dev" ? "5" : "0",
+            role: req.user.role === "dev" ? "admin" : "driver",
             employer: req.user._id,
             active: true,
           }).then(() => {
@@ -47,10 +46,10 @@ authCtrl.login = (req, res) => {
     .exec()
     .then((user) => {
       if (!user) {
-        return res.send({ message: "Incorrect username and/or password" });
+        return res.status(404).send({ message: "Incorrect username and/or password" });
       }
       if (!user.active) {
-        return res.send({
+        return res.status(500).send({
           message: "User inactive, contact with your employer",
         });
       }
@@ -58,9 +57,9 @@ authCtrl.login = (req, res) => {
         const encryptedPassword = key.toString("base64");
         if (user.password === encryptedPassword) {
           const token = signToken(user._id);
-          return res.send({ token });
+          return res.status(200).send({ token });
         }
-        return res.send({ message: "Incorrect username and/or password" });
+        return res.status(404).send({ message: "Incorrect username and/or password" });
       });
     });
 };
