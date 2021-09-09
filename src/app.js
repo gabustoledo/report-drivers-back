@@ -15,7 +15,7 @@ const viaticRouter = require("./routes/viatic.routes");
 const app = express();
 
 require("dotenv").config();
-app.set("port", process.env.PORT || 3000);
+app.set("port", process.env.PORT || 8080);
 
 app.use(cors());
 app.use(morgan("dev"));
