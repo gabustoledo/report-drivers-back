@@ -6,7 +6,7 @@ const userSchema = new Schema(
     password: String,
     salt: String,
     role: String, // dev, admin, driver
-    //employer: { type: Schema.Types.ObjectId, ref: "User" }, // For drivers
+    employer: { type: Schema.Types.ObjectId, ref: "User" }, // For drivers
     active: Boolean,
   },
   {

@@ -1,55 +1,66 @@
-const Products = require("../models/Products");
+const Toll = require("../models/Toll");
 
-const productsCtrl = {};
+const tollCtrl = {};
 
-// Create and save product.
-productsCtrl.create = (req, res) => {
+// Create and save extra.
+tollCtrl.create = (req, res) => {
   // Validate request
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
 
-  // Create product
-  const newProduct = new Products(req.body);
+  // Create toll
+  const newToll = new Toll({
+    amount: req.body.amount,
+    date: req.body.date,
+    name: req.body.name,
+    photo: req.body.photo,
+    id_driver: req.user._id,
+    active: true,
+  });
 
-  // Save user
-  newProduct
+  // Save toll
+  newToll
     .save()
     .then((data) => {
       res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Product.",
+        message: err.message || "Some error occurred while creating the Toll.",
       });
     });
 };
 
-// Get all products.
-productsCtrl.getProducts = async (req, res) => {
-  const products = await Products.find();
-  res.status(200).send(products);
+// Get all toll.
+tollCtrl.getToll = async (req, res) => {
+  const id_driver = req.user._id;
+  const tolls = await Toll.find({ id_driver });
+  res.status(200).send(tolls);
 };
 
-// Get one product by id.
-productsCtrl.getProduct = (req, res) => {
-  const id = req.params.id;
+// Get one toll by id.
+tollCtrl.getTollId = (req, res) => {
+  const _id = req.params.id;
+  const id_driver = req.user._id;
 
-  Products.findById(id)
+  Toll.find({ _id, id_driver })
     .then((data) => {
       if (!data)
-        res.status(404).send({ message: "Not found Product with id " + id });
-      else res.status(200).send(data);
+        res.status(404).send({ message: "Not found Toll with id " + id });
+      else if (data === [])
+        res.status(404).send({ message: "Not found Toll with id " + id });    
+      else res.status(200).send(data[0]);
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error retrieving Product with id=" + id });
+      res.status(500).send({ message: "Error retrieving Toll with id=" + id });
     });
 };
 
 
-// Update a product by id
-productsCtrl.updateProduct = (req, res) => {
+// Update a toll by id
+tollCtrl.updateToll = (req, res) => {
   if (!req.body) {
     return res.status(400).send({
       message: "Data to update can not be empty!",
@@ -58,46 +69,46 @@ productsCtrl.updateProduct = (req, res) => {
 
   const id = req.params.id;
 
-  Products.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Toll.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot update Product with id=${id}. Maybe Product was not found!`,
+          message: `Cannot update Toll with id=${id}. Maybe Toll was not found!`,
         });
       } else {
-        res.status(204).send({ message: "Product was updated successfully." });
+        res.status(204).send({ message: "Toll was updated successfully." });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating Product with id=" + id,
+        message: "Error updating Toll with id=" + id,
       });
     });
 };
 
 
-// Delete a product
-productsCtrl.deleteProduct = (req, res) => {
+// Delete a toll
+tollCtrl.deleteToll = (req, res) => {
   const id = req.params.id;
 
-  Products.findByIdAndRemove(id)
+  Toll.findByIdAndRemove(id)
     .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete Product with id=${id}. Maybe Product was not found!`,
+          message: `Cannot delete Toll with id=${id}. Maybe Toll was not found!`,
         });
       } else {
         res.status(204).send({
-          message: "Product was deleted successfully!",
+          message: "Toll was deleted successfully!",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete Product with id=" + id,
+        message: "Could not delete Toll with id=" + id,
       });
     });
 };
 
 // Export all function controller.
-module.exports = productsCtrl;
+module.exports = tollCtrl;

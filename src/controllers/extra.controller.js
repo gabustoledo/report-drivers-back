@@ -35,19 +35,23 @@ extraCtrl.create = (req, res) => {
 
 // Get all extra.
 extraCtrl.getExtra = async (req, res) => {
-  const extras = await Extra.find();
+  const id_driver = req.user._id;
+  const extras = await Extra.find({ id_driver });
   res.status(200).send(extras);
 };
 
 // Get one extra by id.
-extraCtrl.getExtra = (req, res) => {
-  const id = req.params.id;
+extraCtrl.getExtraId = (req, res) => {
+  const _id = req.params.id;
+  const id_driver = req.user._id;
 
-  Extra.findById(id)
+  Extra.find({ _id, id_driver })
     .then((data) => {
       if (!data)
         res.status(404).send({ message: "Not found Extra with id " + id });
-      else res.status(200).send(data);
+      else if (data === [])
+        res.status(404).send({ message: "Not found Extra with id " + id });    
+      else res.status(200).send(data[0]);
     })
     .catch((err) => {
       res.status(500).send({ message: "Error retrieving Extra with id=" + id });

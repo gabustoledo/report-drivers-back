@@ -6,9 +6,11 @@ const bodyParser = require("body-parser");
 
 // Exportacion de Rutas
 const userRouter = require("./routes/users.routes");
-const productRouter = require("./routes/products.routes");
 const authRouter = require("./routes/auth.routes");
 const extraRouter = require("./routes/extra.routes");
+const tollRouter = require("./routes/toll.routes");
+const fuelRouter = require("./routes/fuel.routes");
+const viaticRouter = require("./routes/viatic.routes");
 
 const app = express();
 
@@ -22,8 +24,10 @@ app.use(express.urlencoded({ extended: false }));
 
 // Definicion de rutas de la api
 app.use("/api/users", userRouter);
-app.use("/api/products", productRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/extra", extraRouter);
+app.use("/api/toll", tollRouter);
+app.use("/api/fuel", fuelRouter);
+app.use("/api/viatic", viaticRouter);
 
 module.exports = app;

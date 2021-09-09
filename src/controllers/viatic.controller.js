@@ -1,55 +1,64 @@
-const Products = require("../models/Products");
+const Viatic = require("../models/Viatic");
 
-const productsCtrl = {};
+const viaticCtrl = {};
 
-// Create and save product.
-productsCtrl.create = (req, res) => {
+// Create and save viatic.
+viaticCtrl.create = (req, res) => {
   // Validate request
   if (!req.body) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
 
-  // Create product
-  const newProduct = new Products(req.body);
+  // Create viatic
+  const newViatic = new Viatic({
+    amount: req.body.amount,
+    day: req.body.day,
+    id_driver: req.user._id,
+    active: true,
+  });
 
-  // Save user
-  newProduct
+  // Save viatic
+  newViatic
     .save()
     .then((data) => {
       res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Product.",
+        message: err.message || "Some error occurred while creating the Viatic.",
       });
     });
 };
 
-// Get all products.
-productsCtrl.getProducts = async (req, res) => {
-  const products = await Products.find();
-  res.status(200).send(products);
+// Get all viatic.
+viaticCtrl.getViatic = async (req, res) => {
+  const id_driver = req.user._id;
+  const viatic = await Viatic.find({ id_driver });
+  res.status(200).send(viatic);
 };
 
-// Get one product by id.
-productsCtrl.getProduct = (req, res) => {
-  const id = req.params.id;
+// Get one viatic by id.
+viaticCtrl.getViaticId = (req, res) => {
+  const _id = req.params.id;
+  const id_driver = req.user._id;
 
-  Products.findById(id)
+  Viatic.find({ _id, id_driver })
     .then((data) => {
       if (!data)
-        res.status(404).send({ message: "Not found Product with id " + id });
-      else res.status(200).send(data);
+        res.status(404).send({ message: "Not found Viatic with id " + id });
+      else if (data === [])
+        res.status(404).send({ message: "Not found Viatic with id " + id });    
+      else res.status(200).send(data[0]);
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error retrieving Product with id=" + id });
+      res.status(500).send({ message: "Error retrieving Viatic with id=" + id });
     });
 };
 
 
-// Update a product by id
-productsCtrl.updateProduct = (req, res) => {
+// Update a viatic by id
+viaticCtrl.updateViatic = (req, res) => {
   if (!req.body) {
     return res.status(400).send({
       message: "Data to update can not be empty!",
@@ -58,46 +67,46 @@ productsCtrl.updateProduct = (req, res) => {
 
   const id = req.params.id;
 
-  Products.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Viatic.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot update Product with id=${id}. Maybe Product was not found!`,
+          message: `Cannot update Viatic with id=${id}. Maybe Viatic was not found!`,
         });
       } else {
-        res.status(204).send({ message: "Product was updated successfully." });
+        res.status(204).send({ message: "Viatic was updated successfully." });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating Product with id=" + id,
+        message: "Error updating Viatic with id=" + id,
       });
     });
 };
 
 
-// Delete a product
-productsCtrl.deleteProduct = (req, res) => {
+// Delete a viatic
+viaticCtrl.deleteViatic = (req, res) => {
   const id = req.params.id;
 
-  Products.findByIdAndRemove(id)
+  Viatic.findByIdAndRemove(id)
     .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete Product with id=${id}. Maybe Product was not found!`,
+          message: `Cannot delete Viatic with id=${id}. Maybe Viatic was not found!`,
         });
       } else {
         res.status(204).send({
-          message: "Product was deleted successfully!",
+          message: "Viatic was deleted successfully!",
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Could not delete Product with id=" + id,
+        message: "Could not delete Viatic with id=" + id,
       });
     });
 };
 
 // Export all function controller.
-module.exports = productsCtrl;
+module.exports = viaticCtrl;
