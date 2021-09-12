@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+
+  report-back:
+    container_name: report-back
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules' 
+    ports:
+      - 8080:8080
