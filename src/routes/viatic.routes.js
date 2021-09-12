@@ -9,16 +9,19 @@ const {
 // Create
 router.post("/", isAuthenticated, viaticCtrl.create);
 
-// Get all extras
+// Get all viatic
 router.get("/", isAuthenticated, viaticCtrl.getViatic);
 
-// Get one extra
+// Get viatic all my drivers
+router.get("/mydrivers", isAuthenticated, viaticCtrl.getViaticByUser);
+
+// Get one viatic
 router.get("/:id", isAuthenticated, viaticCtrl.getViaticId);
 
-// Update extra
+// Update viatic
 router.put("/:id", isAuthenticated, viaticCtrl.updateViatic);
 
-// Delete extra
+// Delete viatic
 router.delete("/:id", isAuthenticated, isDev, viaticCtrl.deleteViatic);
 
 module.exports = router;

@@ -9,16 +9,19 @@ const {
 // Create
 router.post("/", isAuthenticated, tollCtrl.create);
 
-// Get all extras
+// Get all toll
 router.get("/", isAuthenticated, tollCtrl.getToll);
 
-// Get one extra
+// Get toll all my drivers
+router.get("/mydrivers", isAuthenticated, tollCtrl.getTollByUser);
+
+// Get one toll
 router.get("/:id", isAuthenticated, tollCtrl.getTollId);
 
-// Update extra
+// Update toll
 router.put("/:id", isAuthenticated, tollCtrl.updateToll);
 
-// Delete extra
+// Delete toll
 router.delete("/:id", isAuthenticated, isDev, tollCtrl.deleteToll);
 
 module.exports = router;

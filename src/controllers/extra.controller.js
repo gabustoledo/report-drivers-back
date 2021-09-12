@@ -1,4 +1,5 @@
 const Extra = require("../models/Extra");
+const User = require("../models/User");
 
 const extraCtrl = {};
 
@@ -108,6 +109,35 @@ extraCtrl.deleteExtra = (req, res) => {
         message: "Could not delete Extra with id=" + id,
       });
     });
+};
+
+// Get all extra.
+extraCtrl.getExtraByUser = async (req, res) => {
+
+  const employer = req.user._id;
+  const users = await User.find({ employer });
+  const newUsers = users.map((user) => {
+    return {
+      _id: user._id,
+      name: user.name,
+    };
+  });
+
+  let extras = []
+
+  for (let i = 0; i < newUsers.length; i++) {
+    const id_driver = newUsers[i]._id;
+    const extra = await Extra.find({ id_driver });
+    const aux = {
+      _id: newUsers[i]._id,
+      name: newUsers[i].name,
+      extras: extra
+    }
+    extras.push(aux)
+  }
+  
+
+  res.status(200).send(extras);
 };
 
 // Export all function controller.

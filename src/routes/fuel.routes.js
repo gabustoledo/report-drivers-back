@@ -9,16 +9,19 @@ const {
 // Create
 router.post("/", isAuthenticated, fuelCtrl.create);
 
-// Get all extras
+// Get all fuel
 router.get("/", isAuthenticated, fuelCtrl.getFuel);
 
-// Get one extra
+// Get fuel all my drivers
+router.get("/mydrivers", isAuthenticated, fuelCtrl.getFuelByUser);
+
+// Get one fuel
 router.get("/:id", isAuthenticated, fuelCtrl.getFuelId);
 
-// Update extra
+// Update fuel
 router.put("/:id", isAuthenticated, fuelCtrl.updateFuel);
 
-// Delete extra
+// Delete fuel
 router.delete("/:id", isAuthenticated, isDev, fuelCtrl.deleteFuel);
 
 module.exports = router;

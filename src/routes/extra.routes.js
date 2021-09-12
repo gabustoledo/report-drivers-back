@@ -12,6 +12,9 @@ router.post("/", isAuthenticated, extraCtrl.create);
 // Get all extras
 router.get("/", isAuthenticated, extraCtrl.getExtra);
 
+// Get extra all my drivers
+router.get("/mydrivers", isAuthenticated, extraCtrl.getExtraByUser);
+
 // Get one extra
 router.get("/:id", isAuthenticated, extraCtrl.getExtraId);
 

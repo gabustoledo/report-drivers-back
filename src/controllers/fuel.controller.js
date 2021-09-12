@@ -1,4 +1,5 @@
 const Fuel = require("../models/Fuel");
+const User = require("../models/User");
 
 const fuelCtrl = {};
 
@@ -51,14 +52,13 @@ fuelCtrl.getFuelId = (req, res) => {
       if (!data)
         res.status(404).send({ message: "Not found Fuel with id " + id });
       else if (data === [])
-        res.status(404).send({ message: "Not found Fuel with id " + id });    
+        res.status(404).send({ message: "Not found Fuel with id " + id });
       else res.status(200).send(data[0]);
     })
     .catch((err) => {
       res.status(500).send({ message: "Error retrieving Fuel with id=" + id });
     });
 };
-
 
 // Update a fuel by id
 fuelCtrl.updateFuel = (req, res) => {
@@ -87,7 +87,6 @@ fuelCtrl.updateFuel = (req, res) => {
     });
 };
 
-
 // Delete a fuel
 fuelCtrl.deleteFuel = (req, res) => {
   const id = req.params.id;
@@ -109,6 +108,35 @@ fuelCtrl.deleteFuel = (req, res) => {
         message: "Could not delete Fuel with id=" + id,
       });
     });
+};
+
+// Get all fuel.
+fuelCtrl.getFuelByUser = async (req, res) => {
+
+  const employer = req.user._id;
+  const users = await User.find({ employer });
+  const newUsers = users.map((user) => {
+    return {
+      _id: user._id,
+      name: user.name,
+    };
+  });
+
+  let fuels = []
+
+  for (let i = 0; i < newUsers.length; i++) {
+    const id_driver = newUsers[i]._id;
+    const fuel = await Fuel.find({ id_driver });
+    const aux = {
+      _id: newUsers[i]._id,
+      name: newUsers[i].name,
+      fuels: fuel
+    }
+    fuels.push(aux)
+  }
+  
+
+  res.status(200).send(fuels);
 };
 
 // Export all function controller.

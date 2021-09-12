@@ -1,4 +1,5 @@
 const Toll = require("../models/Toll");
+const User = require("../models/User");
 
 const tollCtrl = {};
 
@@ -108,6 +109,35 @@ tollCtrl.deleteToll = (req, res) => {
         message: "Could not delete Toll with id=" + id,
       });
     });
+};
+
+// Get all toll.
+tollCtrl.getTollByUser = async (req, res) => {
+
+  const employer = req.user._id;
+  const users = await User.find({ employer });
+  const newUsers = users.map((user) => {
+    return {
+      _id: user._id,
+      name: user.name,
+    };
+  });
+
+  let tolls = []
+
+  for (let i = 0; i < newUsers.length; i++) {
+    const id_driver = newUsers[i]._id;
+    const toll = await Toll.find({ id_driver });
+    const aux = {
+      _id: newUsers[i]._id,
+      name: newUsers[i].name,
+      tolls: toll
+    }
+    tolls.push(aux)
+  }
+  
+
+  res.status(200).send(tolls);
 };
 
 // Export all function controller.
