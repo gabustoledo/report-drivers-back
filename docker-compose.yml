@@ -4,9 +4,10 @@ services:
 
   report-back:
     container_name: report-back
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: 'gabustoledo/report-back'
     volumes:
       - '.:/app'
       - '/app/node_modules' 

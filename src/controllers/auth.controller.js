@@ -7,7 +7,7 @@ const authCtrl = {};
 // Funcion para generar un token de un dia con un id.
 const signToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, {
-    expiresIn: 86400,
+    expiresIn: 2678400, // Un mes dura el token
   });
 };
 
