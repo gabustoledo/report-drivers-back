@@ -1,5 +1,6 @@
 const Viatic = require("../models/Viatic");
 const User = require("../models/User");
+const Money = require("../models/Money");
 
 const viaticCtrl = {};
 
@@ -19,15 +20,37 @@ viaticCtrl.create = (req, res) => {
     active: true,
   });
 
+  // Create money
+  const newMoney = new Money({
+    amount: req.body.amount,
+    date: req.body.day,
+    detail: "viatico",
+    type: "egreso",
+    id_driver: req.user._id,
+    active: true,
+  });
+
   // Save viatic
   newViatic
+    .save()
+    .then((data) => {
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the Viatic.",
+      });
+    });
+
+  // Save money
+  newMoney
     .save()
     .then((data) => {
       res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Viatic.",
+        message: err.message || "Some error occurred while creating the Money.",
       });
     });
 };
@@ -49,14 +72,15 @@ viaticCtrl.getViaticId = (req, res) => {
       if (!data)
         res.status(404).send({ message: "Not found Viatic with id " + id });
       else if (data === [])
-        res.status(404).send({ message: "Not found Viatic with id " + id });    
+        res.status(404).send({ message: "Not found Viatic with id " + id });
       else res.status(200).send(data[0]);
     })
     .catch((err) => {
-      res.status(500).send({ message: "Error retrieving Viatic with id=" + id });
+      res
+        .status(500)
+        .send({ message: "Error retrieving Viatic with id=" + id });
     });
 };
-
 
 // Update a viatic by id
 viaticCtrl.updateViatic = (req, res) => {
@@ -85,7 +109,6 @@ viaticCtrl.updateViatic = (req, res) => {
     });
 };
 
-
 // Delete a viatic
 viaticCtrl.deleteViatic = (req, res) => {
   const id = req.params.id;
@@ -111,7 +134,6 @@ viaticCtrl.deleteViatic = (req, res) => {
 
 // Get all toll.
 viaticCtrl.getViaticByUser = async (req, res) => {
-
   const employer = req.user._id;
   const users = await User.find({ employer });
   const newUsers = users.map((user) => {
@@ -121,7 +143,7 @@ viaticCtrl.getViaticByUser = async (req, res) => {
     };
   });
 
-  let viatics = []
+  let viatics = [];
 
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
@@ -129,11 +151,10 @@ viaticCtrl.getViaticByUser = async (req, res) => {
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      viatics: viatic
-    }
-    viatics.push(aux)
+      viatics: viatic,
+    };
+    viatics.push(aux);
   }
-  
 
   res.status(200).send(viatics);
 };

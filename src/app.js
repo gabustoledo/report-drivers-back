@@ -13,6 +13,7 @@ const extraRouter = require("./routes/extra.routes");
 const tollRouter = require("./routes/toll.routes");
 const fuelRouter = require("./routes/fuel.routes");
 const viaticRouter = require("./routes/viatic.routes");
+const moneyRouter = require("./routes/money.routes");
 
 const app = express();
 
@@ -33,5 +34,6 @@ app.use("/api/extra", extraRouter);
 app.use("/api/toll", tollRouter);
 app.use("/api/fuel", fuelRouter);
 app.use("/api/viatic", viaticRouter);
+app.use("/api/money", moneyRouter);
 
 module.exports = app;

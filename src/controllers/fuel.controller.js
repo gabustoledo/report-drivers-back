@@ -1,5 +1,6 @@
 const Fuel = require("../models/Fuel");
 const User = require("../models/User");
+const Money = require("../models/Money");
 
 const fuelCtrl = {};
 
@@ -22,15 +23,36 @@ fuelCtrl.create = (req, res) => {
     active: true,
   });
 
+  // Create money
+  const newMoney = new Money({
+    amount: req.body.amount,
+    date: req.body.date,
+    detail: "combustible",
+    type: "egreso",
+    id_driver: req.user._id,
+    active: true,
+  });
+
   // Save fuel
   newFuel
+    .save()
+    .then((data) => {
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the Fuel.",
+      });
+    });
+
+  // Save money
+  newMoney
     .save()
     .then((data) => {
       res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Fuel.",
+        message: err.message || "Some error occurred while creating the Money.",
       });
     });
 };
@@ -112,7 +134,6 @@ fuelCtrl.deleteFuel = (req, res) => {
 
 // Get all fuel.
 fuelCtrl.getFuelByUser = async (req, res) => {
-
   const employer = req.user._id;
   const users = await User.find({ employer });
   const newUsers = users.map((user) => {
@@ -122,7 +143,7 @@ fuelCtrl.getFuelByUser = async (req, res) => {
     };
   });
 
-  let fuels = []
+  let fuels = [];
 
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
@@ -130,11 +151,10 @@ fuelCtrl.getFuelByUser = async (req, res) => {
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      fuels: fuel
-    }
-    fuels.push(aux)
+      fuels: fuel,
+    };
+    fuels.push(aux);
   }
-  
 
   res.status(200).send(fuels);
 };

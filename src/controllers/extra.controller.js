@@ -1,5 +1,6 @@
 const Extra = require("../models/Extra");
 const User = require("../models/User");
+const Money = require("../models/Money");
 
 const extraCtrl = {};
 
@@ -21,15 +22,35 @@ extraCtrl.create = (req, res) => {
     active: true,
   });
 
+  // Create money
+  const newMoney = new Money({
+    amount: req.body.amount,
+    date: req.body.date,
+    detail: "extra",
+    type: "egreso",
+    id_driver: req.user._id,
+    active: true,
+  });
   // Save extra
   newExtra
+    .save()
+    .then((data) => {
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the Extra.",
+      });
+    });
+
+  // Save money
+  newMoney
     .save()
     .then((data) => {
       res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Extra.",
+        message: err.message || "Some error occurred while creating the Money.",
       });
     });
 };
@@ -51,14 +72,13 @@ extraCtrl.getExtraId = (req, res) => {
       if (!data)
         res.status(404).send({ message: "Not found Extra with id " + id });
       else if (data === [])
-        res.status(404).send({ message: "Not found Extra with id " + id });    
+        res.status(404).send({ message: "Not found Extra with id " + id });
       else res.status(200).send(data[0]);
     })
     .catch((err) => {
       res.status(500).send({ message: "Error retrieving Extra with id=" + id });
     });
 };
-
 
 // Update a extra by id
 extraCtrl.updateExtra = (req, res) => {
@@ -87,7 +107,6 @@ extraCtrl.updateExtra = (req, res) => {
     });
 };
 
-
 // Delete a extra
 extraCtrl.deleteExtra = (req, res) => {
   const id = req.params.id;
@@ -113,7 +132,6 @@ extraCtrl.deleteExtra = (req, res) => {
 
 // Get all extra.
 extraCtrl.getExtraByUser = async (req, res) => {
-
   const employer = req.user._id;
   const users = await User.find({ employer });
   const newUsers = users.map((user) => {
@@ -123,7 +141,7 @@ extraCtrl.getExtraByUser = async (req, res) => {
     };
   });
 
-  let extras = []
+  let extras = [];
 
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
@@ -131,11 +149,10 @@ extraCtrl.getExtraByUser = async (req, res) => {
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      extras: extra
-    }
-    extras.push(aux)
+      extras: extra,
+    };
+    extras.push(aux);
   }
-  
 
   res.status(200).send(extras);
 };

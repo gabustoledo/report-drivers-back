@@ -1,5 +1,6 @@
 const Toll = require("../models/Toll");
 const User = require("../models/User");
+const Money = require("../models/Money");
 
 const tollCtrl = {};
 
@@ -21,15 +22,36 @@ tollCtrl.create = (req, res) => {
     active: true,
   });
 
+  // Create money
+  const newMoney = new Money({
+    amount: req.body.amount,
+    date: req.body.date,
+    detail: "peaje",
+    type: "egreso",
+    id_driver: req.user._id,
+    active: true,
+  });
+
   // Save toll
   newToll
+    .save()
+    .then((data) => {
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while creating the Toll.",
+      });
+    });
+
+  // Save money
+  newMoney
     .save()
     .then((data) => {
       res.status(201).send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Toll.",
+        message: err.message || "Some error occurred while creating the Money.",
       });
     });
 };
@@ -51,14 +73,13 @@ tollCtrl.getTollId = (req, res) => {
       if (!data)
         res.status(404).send({ message: "Not found Toll with id " + id });
       else if (data === [])
-        res.status(404).send({ message: "Not found Toll with id " + id });    
+        res.status(404).send({ message: "Not found Toll with id " + id });
       else res.status(200).send(data[0]);
     })
     .catch((err) => {
       res.status(500).send({ message: "Error retrieving Toll with id=" + id });
     });
 };
-
 
 // Update a toll by id
 tollCtrl.updateToll = (req, res) => {
@@ -87,7 +108,6 @@ tollCtrl.updateToll = (req, res) => {
     });
 };
 
-
 // Delete a toll
 tollCtrl.deleteToll = (req, res) => {
   const id = req.params.id;
@@ -113,7 +133,6 @@ tollCtrl.deleteToll = (req, res) => {
 
 // Get all toll.
 tollCtrl.getTollByUser = async (req, res) => {
-
   const employer = req.user._id;
   const users = await User.find({ employer });
   const newUsers = users.map((user) => {
@@ -123,7 +142,7 @@ tollCtrl.getTollByUser = async (req, res) => {
     };
   });
 
-  let tolls = []
+  let tolls = [];
 
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
@@ -131,11 +150,10 @@ tollCtrl.getTollByUser = async (req, res) => {
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      tolls: toll
-    }
-    tolls.push(aux)
+      tolls: toll,
+    };
+    tolls.push(aux);
   }
-  
 
   res.status(200).send(tolls);
 };
