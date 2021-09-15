@@ -4,6 +4,18 @@ const Money = require("../models/Money");
 
 const tollCtrl = {};
 
+//Comparer Function
+function GetSortOrder(prop) {
+  return function (a, b) {
+    if (a[prop] > b[prop]) {
+      return 1;
+    } else if (a[prop] < b[prop]) {
+      return -1;
+    }
+    return 0;
+  };
+}
+
 // Create and save extra.
 tollCtrl.create = (req, res) => {
   // Validate request
@@ -60,7 +72,8 @@ tollCtrl.create = (req, res) => {
 tollCtrl.getToll = async (req, res) => {
   const id_driver = req.user._id;
   const tolls = await Toll.find({ id_driver });
-  res.status(200).send(tolls);
+  const tollsSort = tolls.sort(GetSortOrder("date"));
+  res.status(200).send(tollsSort);
 };
 
 // Get one toll by id.
@@ -147,10 +160,11 @@ tollCtrl.getTollByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const toll = await Toll.find({ id_driver });
+    const tollSort = toll.sort(GetSortOrder("date"));
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      tolls: toll,
+      tolls: tollSort,
     };
     tolls.push(aux);
   }

@@ -4,6 +4,18 @@ const Money = require("../models/Money");
 
 const extraCtrl = {};
 
+//Comparer Function
+function GetSortOrder(prop) {
+  return function (a, b) {
+    if (a[prop] > b[prop]) {
+      return 1;
+    } else if (a[prop] < b[prop]) {
+      return -1;
+    }
+    return 0;
+  };
+}
+
 // Create and save extra.
 extraCtrl.create = (req, res) => {
   // Validate request
@@ -59,7 +71,8 @@ extraCtrl.create = (req, res) => {
 extraCtrl.getExtra = async (req, res) => {
   const id_driver = req.user._id;
   const extras = await Extra.find({ id_driver });
-  res.status(200).send(extras);
+  const extrasSort = extras.sort(GetSortOrder("date"));
+  res.status(200).send(extrasSort);
 };
 
 // Get one extra by id.
@@ -146,10 +159,11 @@ extraCtrl.getExtraByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const extra = await Extra.find({ id_driver });
+    const extraSort = extra.sort(GetSortOrder("date"));
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      extras: extra,
+      extras: extraSort,
     };
     extras.push(aux);
   }

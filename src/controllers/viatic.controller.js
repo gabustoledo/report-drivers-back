@@ -4,6 +4,18 @@ const Money = require("../models/Money");
 
 const viaticCtrl = {};
 
+//Comparer Function
+function GetSortOrder(prop) {
+  return function (a, b) {
+    if (a[prop] > b[prop]) {
+      return 1;
+    } else if (a[prop] < b[prop]) {
+      return -1;
+    }
+    return 0;
+  };
+}
+
 // Create and save viatic.
 viaticCtrl.create = (req, res) => {
   // Validate request
@@ -59,7 +71,8 @@ viaticCtrl.create = (req, res) => {
 viaticCtrl.getViatic = async (req, res) => {
   const id_driver = req.user._id;
   const viatic = await Viatic.find({ id_driver });
-  res.status(200).send(viatic);
+  const viaticSort = viatic.sort(GetSortOrder("day"));
+  res.status(200).send(viaticSort);
 };
 
 // Get one viatic by id.
@@ -148,10 +161,11 @@ viaticCtrl.getViaticByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const viatic = await Viatic.find({ id_driver });
+    const viaticSort = viatic.sort(GetSortOrder("day"));
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      viatics: viatic,
+      viatics: viaticSort,
     };
     viatics.push(aux);
   }

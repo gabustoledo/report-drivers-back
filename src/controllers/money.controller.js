@@ -3,6 +3,18 @@ const User = require("../models/User");
 
 const moneyCtrl = {};
 
+//Comparer Function
+function GetSortOrder(prop) {
+  return function (a, b) {
+    if (a[prop] > b[prop]) {
+      return 1;
+    } else if (a[prop] < b[prop]) {
+      return -1;
+    }
+    return 0;
+  };
+}
+
 // Create and save money.
 moneyCtrl.create = (req, res) => {
   // Validate request
@@ -69,13 +81,14 @@ moneyCtrl.createByUser = (req, res) => {
 moneyCtrl.getMoney = async (req, res) => {
   const id_driver = req.user._id;
   const moneys = await Money.find({ id_driver });
+  const moneysSort = moneys.sort(GetSortOrder("date"));
 
   let total = 0;
-  for (let i = 0; i < moneys.length; i++) {
-    if (moneys[i].type === "ingreso") total += moneys[i].amount;
-    else total -= moneys[i].amount;
+  for (let i = 0; i < moneysSort.length; i++) {
+    if (moneysSort[i].type === "ingreso") total += moneysSort[i].amount;
+    else total -= moneysSort[i].amount;
   }
-  res.status(200).send({ moneys: moneys, total: total });
+  res.status(200).send({ moneys: moneysSort, total: total });
 };
 
 // Get one money by id.
@@ -162,17 +175,18 @@ moneyCtrl.getMoneyByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const money = await Money.find({ id_driver });
+    const moneySort = money.sort(GetSortOrder("date"));
 
     let total = 0;
-    for (let i = 0; i < money.length; i++) {
-      if (money[i].type === "ingreso") total += money[i].amount;
-      else total -= money[i].amount;
+    for (let i = 0; i < moneySort.length; i++) {
+      if (moneySort[i].type === "ingreso") total += moneySort[i].amount;
+      else total -= moneySort[i].amount;
     }
 
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      moneys: money,
+      moneys: moneySort,
       total: total,
     };
     moneys.push(aux);

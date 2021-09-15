@@ -1,8 +1,19 @@
 const Fuel = require("../models/Fuel");
 const User = require("../models/User");
-const Money = require("../models/Money");
 
 const fuelCtrl = {};
+
+//Comparer Function
+function GetSortOrder(prop) {
+  return function (a, b) {
+    if (a[prop] > b[prop]) {
+      return 1;
+    } else if (a[prop] < b[prop]) {
+      return -1;
+    }
+    return 0;
+  };
+}
 
 // Create and save fuel.
 fuelCtrl.create = (req, res) => {
@@ -23,36 +34,13 @@ fuelCtrl.create = (req, res) => {
     active: true,
   });
 
-  // Create money
-  const newMoney = new Money({
-    amount: req.body.amount,
-    date: req.body.date,
-    detail: "combustible",
-    type: "egreso",
-    id_driver: req.user._id,
-    active: true,
-  });
-
   // Save fuel
   newFuel
     .save()
-    .then((data) => {
-    })
+    .then((data) => {})
     .catch((err) => {
       res.status(500).send({
         message: err.message || "Some error occurred while creating the Fuel.",
-      });
-    });
-
-  // Save money
-  newMoney
-    .save()
-    .then((data) => {
-      res.status(201).send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while creating the Money.",
       });
     });
 };
@@ -61,7 +49,8 @@ fuelCtrl.create = (req, res) => {
 fuelCtrl.getFuel = async (req, res) => {
   const id_driver = req.user._id;
   const fuels = await Fuel.find({ id_driver });
-  res.status(200).send(fuels);
+  const fuelsSort = fuels.sort(GetSortOrder("date"));
+  res.status(200).send(fuelsSort);
 };
 
 // Get one fuel by id.
@@ -148,10 +137,11 @@ fuelCtrl.getFuelByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const fuel = await Fuel.find({ id_driver });
+    const fuelSort = fuel.sort(GetSortOrder("date"));
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
-      fuels: fuel,
+      fuels: fuelSort,
     };
     fuels.push(aux);
   }
