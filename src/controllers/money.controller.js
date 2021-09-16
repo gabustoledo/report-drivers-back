@@ -81,7 +81,7 @@ moneyCtrl.createByUser = (req, res) => {
 moneyCtrl.getMoney = async (req, res) => {
   const id_driver = req.user._id;
   const moneys = await Money.find({ id_driver });
-  const moneysSort = moneys.sort(GetSortOrder("date"));
+  const moneysSort = moneys.sort(GetSortOrder("date")).reverse();
 
   let total = 0;
   for (let i = 0; i < moneysSort.length; i++) {
@@ -175,7 +175,7 @@ moneyCtrl.getMoneyByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const money = await Money.find({ id_driver });
-    const moneySort = money.sort(GetSortOrder("date"));
+    const moneySort = money.sort(GetSortOrder("date")).reverse();
 
     let total = 0;
     for (let i = 0; i < moneySort.length; i++) {

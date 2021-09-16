@@ -71,7 +71,7 @@ viaticCtrl.create = (req, res) => {
 viaticCtrl.getViatic = async (req, res) => {
   const id_driver = req.user._id;
   const viatic = await Viatic.find({ id_driver });
-  const viaticSort = viatic.sort(GetSortOrder("day"));
+  const viaticSort = viatic.sort(GetSortOrder("day")).reverse();
   res.status(200).send(viaticSort);
 };
 
@@ -161,7 +161,7 @@ viaticCtrl.getViaticByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const viatic = await Viatic.find({ id_driver });
-    const viaticSort = viatic.sort(GetSortOrder("day"));
+    const viaticSort = viatic.sort(GetSortOrder("day")).reverse();
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,

@@ -71,7 +71,7 @@ extraCtrl.create = (req, res) => {
 extraCtrl.getExtra = async (req, res) => {
   const id_driver = req.user._id;
   const extras = await Extra.find({ id_driver });
-  const extrasSort = extras.sort(GetSortOrder("date"));
+  const extrasSort = extras.sort(GetSortOrder("date")).reverse();
   res.status(200).send(extrasSort);
 };
 
@@ -159,7 +159,7 @@ extraCtrl.getExtraByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const extra = await Extra.find({ id_driver });
-    const extraSort = extra.sort(GetSortOrder("date"));
+    const extraSort = extra.sort(GetSortOrder("date")).reverse();
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,

@@ -49,7 +49,7 @@ fuelCtrl.create = (req, res) => {
 fuelCtrl.getFuel = async (req, res) => {
   const id_driver = req.user._id;
   const fuels = await Fuel.find({ id_driver });
-  const fuelsSort = fuels.sort(GetSortOrder("date"));
+  const fuelsSort = fuels.sort(GetSortOrder("date")).reverse();
   res.status(200).send(fuelsSort);
 };
 
@@ -137,7 +137,7 @@ fuelCtrl.getFuelByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const fuel = await Fuel.find({ id_driver });
-    const fuelSort = fuel.sort(GetSortOrder("date"));
+    const fuelSort = fuel.sort(GetSortOrder("date")).reverse();
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,

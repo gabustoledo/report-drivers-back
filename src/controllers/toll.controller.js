@@ -72,7 +72,7 @@ tollCtrl.create = (req, res) => {
 tollCtrl.getToll = async (req, res) => {
   const id_driver = req.user._id;
   const tolls = await Toll.find({ id_driver });
-  const tollsSort = tolls.sort(GetSortOrder("date"));
+  const tollsSort = tolls.sort(GetSortOrder("date")).reverse();
   res.status(200).send(tollsSort);
 };
 
@@ -160,7 +160,7 @@ tollCtrl.getTollByUser = async (req, res) => {
   for (let i = 0; i < newUsers.length; i++) {
     const id_driver = newUsers[i]._id;
     const toll = await Toll.find({ id_driver });
-    const tollSort = toll.sort(GetSortOrder("date"));
+    const tollSort = toll.sort(GetSortOrder("date")).reverse();
     const aux = {
       _id: newUsers[i]._id,
       name: newUsers[i].name,
